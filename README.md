@@ -42,8 +42,10 @@ This package contains all the essential files needed to set up SysBot.NET on an 
 4. Hold VOL+ and press the POWER button simultaneously
    - The screen will remain black if done correctly
   
-![RCM Jig for Nintendo Switch](https://i.ebayimg.com/images/g/pqoAAOSwYwpkbHh3/s-l1200.jpg)
+![RCM Jig for Nintendo Switch](https://m.media-amazon.com/images/I/51981KBkCFL._AC_UF350,350_QL80_.jpg)
+
 *A typical RCM jig that slides into the right Joy-Con rail*
+
 ### Step 4: Inject Payload
 
 1. Connect your Switch to your PC using the USB-C cable
