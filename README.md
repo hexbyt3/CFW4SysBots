@@ -38,10 +38,12 @@ This package contains all the essential files needed to set up SysBot.NET on an 
 
 1. Power off your Nintendo Switch completely
 2. Insert your microSD card into your Switch
-3. Insert the RCM jig into the right Joy-Con rail
+3. Insert the RCM jig into the right Joy-Con rail 
 4. Hold VOL+ and press the POWER button simultaneously
    - The screen will remain black if done correctly
-
+  
+![RCM Jig for Nintendo Switch](https://i.ebayimg.com/images/g/pqoAAOSwYwpkbHh3/s-l1200.jpg)
+*A typical RCM jig that slides into the right Joy-Con rail*
 ### Step 4: Inject Payload
 
 1. Connect your Switch to your PC using the USB-C cable
