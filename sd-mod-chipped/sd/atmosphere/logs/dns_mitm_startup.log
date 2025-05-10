@@ -1,0 +1,8 @@
+DNS Mitm:
+Adding defaults to redirection list.
+Selecting hosts file...
+Skipping /hosts/sysmmc.txt because it does not exist...
+Selected /hosts/default.txt
+Redirections:
+    `receive-lp1.er.srv.nintendo.net` -> 127.0.0.1
+    `receive-lp1.dg.srv.nintendo.net` -> 127.0.0.1
