@@ -18,7 +18,7 @@ This package contains all the essential files needed to set up SysBot.NET on an 
 - A microSD card (minimum 16GB, recommended 32GB+)
 - An RCM jig or alternative method to enter RCM mode
 
-## Installation Guide
+## Setup Guide for Unpatched Switches
 
 ### Step 1: Format Your SD Card
 
@@ -54,13 +54,40 @@ This package contains all the essential files needed to set up SysBot.NET on an 
    - Select the included `fusee.bin` file
    - Click "Inject Payload"
 
-### Step 5: Initial Atmosphère Setup
+## Setup Guide for Mod Chipped Switches
+
+For Mariko/patched Switch models with mod chips installed, we provide a separate download package that includes Hekate bootloader.
+
+### Step 1: Download Mod Chip Package
+
+1. Download the separate package specially designed for mod chipped Switches
+2. This package includes all the same files as the standard package plus Hekate bootloader
+
+### Step 2: Copy Files to SD Card
+
+1. Format your SD card to FAT32 using the included tool
+2. Copy all contents from the `sd` folder to the root of your SD card
+3. Safely eject the SD card from your computer
+
+### Step 3: Boot Using Mod Chip
+
+1. Insert your SD card into your Switch
+2. Power on your Switch - the mod chip should automatically boot to Hekate
+3. If it doesn't automatically boot, consult your mod chip's documentation for specific boot instructions
+
+### Step 4: Launch Atmosphère
+
+1. In the Hekate bootloader screen, navigate to "Payloads"
+2. Select "fusee.bin" from the list
+3. This will boot your Switch into Atmosphère with all required modules
+
+## Initial Setup
 
 1. The Switch will boot into Atmosphère custom firmware
 2. Follow any on-screen prompts to complete initial setup
 3. Atmosphère will automatically load sys-botbase and other required modules
 
-### Step 6: Connect to SysBot.NET
+## Connect to SysBot.NET
 
 1. Launch your Pokémon game
 2. Connect your Switch to the same network as your PC (via WiFi settings)
@@ -131,6 +158,7 @@ Tips:
 - **Payload injection fails**: Try reinstalling drivers or using a different USB cable
 - **SysBot won't connect**: Verify your IP address and ensure your game is running
 - **Black screen after injection**: Ensure you're using the correct fusee.bin file for your setup
+- **Mod chip not booting**: Consult your mod chip documentation for specific troubleshooting steps
 
 ## Additional Resources
 
