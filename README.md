@@ -2,6 +2,8 @@
 
 This package contains all the essential files needed to set up SysBot.NET on an unpatched Nintendo Switch for Pokémon games automation.
 
+![Discord Banner 2](https://discord.com/api/guilds/1369342739581505536/widget.png?style=banner2)
+
 ## Package Contents
 
 ### Files Included:
