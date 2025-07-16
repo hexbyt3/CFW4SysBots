@@ -2,6 +2,8 @@
 
 This package contains all the essential files needed to set up SysBot.NET on an unpatched Nintendo Switch for Pokémon games automation.
 
+![Discord Banner 2](https://discord.com/api/guilds/1369342739581505536/widget.png?style=banner2)
+
 ## Package Contents
 
 ### Files Included:
@@ -38,9 +40,13 @@ This package contains all the essential files needed to set up SysBot.NET on an 
 
 1. Power off your Nintendo Switch completely
 2. Insert your microSD card into your Switch
-3. Insert the RCM jig into the right Joy-Con rail
+3. Insert the RCM jig into the right Joy-Con rail 
 4. Hold VOL+ and press the POWER button simultaneously
    - The screen will remain black if done correctly
+  
+![RCM Jig for Nintendo Switch](https://m.media-amazon.com/images/I/51981KBkCFL._AC_UF350,350_QL80_.jpg)
+
+*A typical RCM jig that slides into the right Joy-Con rail*
 
 ### Step 4: Inject Payload
 
