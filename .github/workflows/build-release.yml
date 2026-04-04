@@ -120,12 +120,13 @@ jobs:
           # Our custom boot configs, warmboot, and icons overlay hekate defaults
           cp -r configs/mod-chipped/* build/mod-chipped/sd/
 
-          # Tools
-          cp -r tools/mod-chipped/* build/mod-chipped/tools/
+          # Tools go alongside SD contents (ignored by the Switch)
+          mkdir -p build/mod-chipped/sd/tools
+          cp -r tools/mod-chipped/* build/mod-chipped/sd/tools/
 
-          # Package
-          cd build/mod-chipped
-          zip -r ../../CFW4SysBots-mod-chipped.zip sd/ tools/
+          # Package with SD contents at ZIP root
+          cd build/mod-chipped/sd
+          zip -r ../../../CFW4SysBots-mod-chipped.zip .
 
       - name: Build unpatched package
         run: |
@@ -137,16 +138,17 @@ jobs:
           # fusee.bin at SD root for RCM injection
           cp /tmp/dl/fusee.bin build/unpatched/sd/
 
-          # Tools (fat32 formatter + TegraRCM)
-          cp -r tools/unpatched/* build/unpatched/tools/
+          # Tools go alongside SD contents (ignored by the Switch)
+          mkdir -p build/unpatched/sd/tools
+          cp -r tools/unpatched/* build/unpatched/sd/tools/
 
           # Copy fusee.bin into TegraRCM favorites for convenience
-          mkdir -p build/unpatched/tools/TegraRCM/favorites
-          cp /tmp/dl/fusee.bin build/unpatched/tools/TegraRCM/favorites/ 2>/dev/null || true
+          mkdir -p build/unpatched/sd/tools/TegraRCM/favorites
+          cp /tmp/dl/fusee.bin build/unpatched/sd/tools/TegraRCM/favorites/ 2>/dev/null || true
 
-          # Package
-          cd build/unpatched
-          zip -r ../../CFW4SysBots-unpatched.zip sd/ tools/
+          # Package with SD contents at ZIP root
+          cd build/unpatched/sd
+          zip -r ../../../CFW4SysBots-unpatched.zip .
 
       - name: Log versions
         run: |
