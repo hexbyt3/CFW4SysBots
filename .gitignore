@@ -1,4 +1,12 @@
-# Device-specific data - never commit these
+# Old SD card directories (now built by CI)
+sd-mod-chipped/
+sd-unpatched/
+
+# Build artifacts
+build/
+*.zip
+
+# Device-specific data
 **/automatic_backups/
 **/crash_reports/
 **/erpt_reports/

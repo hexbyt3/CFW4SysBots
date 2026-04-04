@@ -2,60 +2,165 @@ name: Build CFW Package Release
 
 on:
   push:
-    tags:
-      - 'v*'
+    tags: ['v*']
   workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
-  release:
+  build:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Get latest AetherBlock
-        run: gh release download --repo hexbyt3/AetherBlock --pattern "AetherBlock.zip"
+      - name: Download Atmosphere
+        run: |
+          gh release download --repo Atmosphere-NX/Atmosphere \
+            --pattern "atmosphere-*.zip" --dir /tmp/dl
+          gh release download --repo Atmosphere-NX/Atmosphere \
+            --pattern "fusee.bin" --dir /tmp/dl
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Update AetherBlock in packages
+      - name: Download Hekate
         run: |
-          mkdir -p /tmp/aetherblock
-          unzip -o AetherBlock.zip -d /tmp/aetherblock
+          gh release download --repo CTCaer/hekate \
+            --pattern "hekate_ctcaer_*_Nyx_*.zip" --dir /tmp/dl
+          gh release download --repo CTCaer/hekate \
+            --pattern "hekate_ctcaer_*.bin" --dir /tmp/dl
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-          # Update in both packages
-          cp /tmp/aetherblock/switch/AetherBlock/AetherBlock.nro \
-            sd-mod-chipped/sd/switch/AetherBlock/AetherBlock.nro
-          cp /tmp/aetherblock/switch/AetherBlock/AetherBlock.nro \
-            sd-unpatched/sd/switch/AetherBlock/AetherBlock.nro
-
-      - name: Package mod-chipped
+      - name: Download AetherBlock
         run: |
-          cd sd-mod-chipped/sd
-          zip -r ../../CFW4SysBots-mod-chipped.zip . \
-            -x "atmosphere/automatic_backups/*" \
-            -x "atmosphere/crash_reports/*" \
-            -x "atmosphere/erpt_reports/*" \
-            -x "atmosphere/fatal_reports/*" \
-            -x "atmosphere/fatal_errors/*" \
-            -x "atmosphere/logs/*"
+          gh release download --repo hexbyt3/AetherBlock \
+            --pattern "AetherBlock.zip" --dir /tmp/dl
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Package unpatched
+      - name: Download JKSV
         run: |
-          cd sd-unpatched/sd
-          zip -r ../../CFW4SysBots-unpatched.zip . \
-            -x "atmosphere/automatic_backups/*" \
-            -x "atmosphere/crash_reports/*" \
-            -x "atmosphere/erpt_reports/*" \
-            -x "atmosphere/fatal_reports/*" \
-            -x "atmosphere/fatal_errors/*" \
-            -x "atmosphere/logs/*"
+          gh release download --repo J-D-K/JKSV \
+            --pattern "JKSV.nro" --dir /tmp/dl
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Download ftpd
+        run: |
+          gh release download --repo mtheall/ftpd \
+            --pattern "ftpd.nro" --dir /tmp/dl
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Download ldn_mitm
+        run: |
+          gh release download --repo Lusamine/ldn_mitm \
+            --pattern "ldn_mitm_*.zip" --dir /tmp/dl
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Download sys-botbase
+        run: |
+          gh release download --repo olliz0r/sys-botbase \
+            --pattern "sys-botbase*.zip" --dir /tmp/dl \
+            || gh release download --repo olliz0r/sys-botbase \
+              --pattern "*.zip" --dir /tmp/dl
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Assemble common SD base
+        run: |
+          mkdir -p build/common
+
+          # Atmosphere (provides atmosphere/, hbmenu.nro, switch/daybreak, haze, reboot_to_payload)
+          unzip -o /tmp/dl/atmosphere-*.zip -d build/common
+
+          # AetherBlock
+          unzip -o /tmp/dl/AetherBlock.zip -d build/common
+
+          # Standalone homebrew
+          cp /tmp/dl/JKSV.nro build/common/switch/
+          cp /tmp/dl/ftpd.nro build/common/switch/
+
+          # ldn_mitm (sysmodule + config app + overlay)
+          unzip -o /tmp/dl/ldn_mitm_*.zip -d build/common \
+            || unzip -o /tmp/dl/ldn_mitm*.zip -d build/common
+
+          # sys-botbase
+          mkdir -p /tmp/sysbot
+          unzip -o /tmp/dl/sys-botbase*.zip -d /tmp/sysbot \
+            || unzip -o /tmp/dl/*.zip -x "atmosphere-*" "hekate*" "AetherBlock*" "ldn_mitm*" -d /tmp/sysbot
+          if [ -d /tmp/sysbot/atmosphere ]; then
+            cp -r /tmp/sysbot/atmosphere/* build/common/atmosphere/
+          fi
+
+          # Overlay our static configs on top (preserves our custom settings)
+          cp -r configs/common/* build/common/
+
+      - name: Build mod-chipped package
+        run: |
+          mkdir -p build/mod-chipped/sd build/mod-chipped/tools
+
+          # Start with common base
+          cp -r build/common/* build/mod-chipped/sd/
+
+          # Hekate bootloader directory
+          unzip -o /tmp/dl/hekate_ctcaer_*_Nyx_*.zip -d build/mod-chipped/sd
+
+          # Hekate binary at SD root
+          cp /tmp/dl/hekate_ctcaer_*.bin build/mod-chipped/sd/
+
+          # fusee.bin in bootloader payloads
+          mkdir -p build/mod-chipped/sd/bootloader/payloads
+          cp /tmp/dl/fusee.bin build/mod-chipped/sd/bootloader/payloads/
+
+          # Our custom boot configs, warmboot, and icons overlay hekate defaults
+          cp -r configs/mod-chipped/* build/mod-chipped/sd/
+
+          # Tools
+          cp -r tools/mod-chipped/* build/mod-chipped/tools/
+
+          # Package
+          cd build/mod-chipped
+          zip -r ../../CFW4SysBots-mod-chipped.zip sd/ tools/
+
+      - name: Build unpatched package
+        run: |
+          mkdir -p build/unpatched/sd build/unpatched/tools
+
+          # Start with common base
+          cp -r build/common/* build/unpatched/sd/
+
+          # fusee.bin at SD root for RCM injection
+          cp /tmp/dl/fusee.bin build/unpatched/sd/
+
+          # Tools (fat32 formatter + TegraRCM)
+          cp -r tools/unpatched/* build/unpatched/tools/
+
+          # Copy fusee.bin into TegraRCM favorites for convenience
+          mkdir -p build/unpatched/tools/TegraRCM/favorites
+          cp /tmp/dl/fusee.bin build/unpatched/tools/TegraRCM/favorites/ 2>/dev/null || true
+
+          # Package
+          cd build/unpatched
+          zip -r ../../CFW4SysBots-unpatched.zip sd/ tools/
+
+      - name: Log versions
+        run: |
+          echo "## Component Versions" >> $GITHUB_STEP_SUMMARY
+          echo "- Atmosphere: $(ls /tmp/dl/atmosphere-*.zip | sed 's/.*atmosphere-//' | sed 's/-master.*//')" >> $GITHUB_STEP_SUMMARY
+          echo "- Hekate: $(ls /tmp/dl/hekate_ctcaer_*.bin | sed 's/.*hekate_ctcaer_//' | sed 's/\.bin//')" >> $GITHUB_STEP_SUMMARY
+          echo "- AetherBlock: latest" >> $GITHUB_STEP_SUMMARY
+          echo "- JKSV: latest" >> $GITHUB_STEP_SUMMARY
+          echo "- ftpd: latest" >> $GITHUB_STEP_SUMMARY
+          echo "- ldn_mitm: latest" >> $GITHUB_STEP_SUMMARY
+          echo "- sys-botbase: latest" >> $GITHUB_STEP_SUMMARY
 
       - name: Create Release
+        if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
         with:
           files: |

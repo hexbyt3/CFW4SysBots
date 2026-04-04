@@ -2,179 +2,81 @@
 ![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/hexbyt3/Cfw4sysbots/total?color=violet)
 
 
-# SysBot.NET Nintendo Switch Setup Guide
+# CFW4SysBots - Nintendo Switch SysBot Setup
 
-This package contains all the essential files needed to set up SysBot.NET on an unpatched/chipped Nintendo Switch for Pokémon games automation.
+Everything you need to run SysBot.NET on a modded Nintendo Switch. Releases are built automatically with the latest upstream components — no manual assembly required.
 
 ![Discord Banner 2](https://discord.com/api/guilds/1369342739581505536/widget.png?style=banner2)
 
-## Package Contents
+## What's Included
 
-### Files Included:
-- **SysBot Base** - Core system for running bots on Nintendo Switch ([source](https://github.com/olliz0r/sys-botbase))
-- **Atmosphère** - Custom firmware for Nintendo Switch ([source](https://github.com/Atmosphere-NX/Atmosphere))
-- **JKSV** - Save file management tool ([source](https://github.com/J-D-K/JKSV))
-- **ldn_mitm** - Required for Sword/Shield SysBot ([source](https://github.com/Lusamine/ldn_mitm/tree/for_sbnet))
-- **ftpd pro** - FTP server for remote file management ([source](https://github.com/mtheall/ftpd))
-- **AetherBlock** - Block nintendo DNS servers or unblock them - without restarting your switch
+Every release automatically pulls the latest versions of:
 
-## Prerequisites
+| Component | Source | Purpose |
+|-----------|--------|---------|
+| **Atmosphere** | [Atmosphere-NX/Atmosphere](https://github.com/Atmosphere-NX/Atmosphere) | Custom firmware |
+| **Hekate** | [CTCaer/hekate](https://github.com/CTCaer/hekate) | Bootloader (mod-chipped only) |
+| **AetherBlock** | [hexbyt3/AetherBlock](https://github.com/hexbyt3/AetherBlock) | DNS blocker, firmware manager, CFW updater |
+| **sys-botbase** | [olliz0r/sys-botbase](https://github.com/olliz0r/sys-botbase) | SysBot.NET system module |
+| **ldn_mitm** | [Lusamine/ldn_mitm](https://github.com/Lusamine/ldn_mitm/tree/for_sbnet) | Local wireless proxy for Sword/Shield |
+| **JKSV** | [J-D-K/JKSV](https://github.com/J-D-K/JKSV) | Save file manager |
+| **ftpd** | [mtheall/ftpd](https://github.com/mtheall/ftpd) | FTP server |
+| **Daybreak** | Bundled with Atmosphere | Firmware installer |
 
-- An **unpatched** Nintendo Switch (vulnerable to RCM exploit)
-- A USB-C cable to connect your Switch to your PC
-- A microSD card (minimum 16GB, recommended 32GB+)
-- An RCM jig or alternative method to enter RCM mode
+## Download
 
-## Setup Guide for Unpatched Switches
+Grab the latest release for your console type:
 
-### Step 1: Format Your SD Card
+- **[CFW4SysBots-mod-chipped.zip](https://github.com/hexbyt3/CFW4SysBots/releases/latest)** — For Mariko/patched Switches with mod chips
+- **[CFW4SysBots-unpatched.zip](https://github.com/hexbyt3/CFW4SysBots/releases/latest)** — For unpatched Switches (RCM exploit)
 
-1. Insert your microSD card into your computer
-2. Navigate to the `tools` folder from the zip package
-3. Run `fat32formatter.exe` to format your card to FAT32
-   - **IMPORTANT**: This will erase all data on the card!
-4. Follow the prompts to complete formatting
+## Setup Guide
 
-### Step 2: Copy Files to SD Card
+### Mod-Chipped Switches
 
-1. After formatting, copy all contents from the `sd` folder in the zip directly to the root of your SD card
-2. Do not change any folder structures or rename files
-3. Safely eject the SD card from your computer
+1. Format your SD card to FAT32 using the included `tools/fat32Formater.exe`
+2. Copy everything from the `sd/` folder in the ZIP to the root of your SD card
+3. Power on — the mod chip boots into Hekate automatically
+4. Select "Payloads" → "fusee.bin" to boot Atmosphere
 
-### Step 3: Enter RCM Mode
+### Unpatched Switches
 
-1. Power off your Nintendo Switch completely
-2. Insert your microSD card into your Switch
-3. Insert the RCM jig into the right Joy-Con rail 
-4. Hold VOL+ and press the POWER button simultaneously
-   - The screen will remain black if done correctly
-  
-![RCM Jig for Nintendo Switch](https://m.media-amazon.com/images/I/51981KBkCFL._AC_UF350,350_QL80_.jpg)
+1. Format your SD card to FAT32
+2. Copy everything from the `sd/` folder to your SD card root
+3. Power off, insert RCM jig, hold VOL+ and press POWER
+4. Connect to PC, run `tools/TegraRCM/TegraRcmGUI.exe`
+5. Inject `fusee.bin` payload
 
-*A typical RCM jig that slides into the right Joy-Con rail*
+## Updating
 
-### Step 4: Inject Payload
+Use **AetherBlock** on the Switch itself (ZR button → CFW Package Updater) to download the latest release without needing a PC. It auto-detects your console type and preserves your settings.
 
-1. Connect your Switch to your PC using the USB-C cable
-2. Navigate to the `tools\TegraRCM` folder from the zip package
-3. Run `TegraRcmGUI.exe` as Administrator
-4. In the TegraRCM application:
-   - Ensure your Switch is detected (shown in the bottom right)
-   - Click on "Install Driver" if your device is not recognized
-   - Navigate to the "Payload" tab
-   - Select the included `fusee.bin` file
-   - Click "Inject Payload"
+Or manually: download the latest release ZIP and copy the `sd/` contents to your SD card, overwriting when prompted. Your save data in the `Nintendo/` folder is untouched.
 
-## Setup Guide for Mod Chipped Switches
+## How Releases Are Built
 
-For Mariko/patched Switch models with mod chips installed, we provide a separate download package that includes Hekate bootloader.
+This repo contains only configuration files and a CI workflow. When a release is tagged, GitHub Actions:
 
-### Step 1: Download Mod Chip Package
+1. Pulls the latest releases of all components from their upstream repos
+2. Assembles the SD card structure with our custom configs overlaid
+3. Packages both mod-chipped and unpatched variants
+4. Publishes the release with both ZIPs
 
-1. Download the separate package specially designed for mod chipped Switches
-2. This package includes all the same files as the standard package plus Hekate bootloader
+No binaries are stored in git — everything is always fresh from upstream.
 
-### Step 2: Copy Files to SD Card
+## Repository Structure
 
-1. Format your SD card to FAT32 using the included tool
-2. Copy all contents from the `sd` folder to the root of your SD card
-3. Safely eject the SD card from your computer
-
-### Step 3: Boot Using Mod Chip
-
-1. Insert your SD card into your Switch
-2. Power on your Switch - the mod chip should automatically boot to Hekate
-3. If it doesn't automatically boot, consult your mod chip's documentation for specific boot instructions
-
-### Step 4: Launch Atmosphère
-
-1. In the Hekate bootloader screen, navigate to "Payloads"
-2. Select "fusee.bin" from the list
-3. This will boot your Switch into Atmosphère with all required modules
-
-## Initial Setup
-
-1. The Switch will boot into Atmosphère custom firmware
-2. Follow any on-screen prompts to complete initial setup
-3. Atmosphère will automatically load sys-botbase and other required modules
-
-## Connect to SysBot.NET
-
-1. Launch your Pokémon game
-2. Connect your Switch to the same network as your PC (via WiFi settings)
-3. Note your Switch's IP address (found in System Settings → Internet → Connection Status)
-4. Use this IP address to connect SysBot.NET from your PC
-
-## Upgrading Existing Setup
-
-When upgrading to a newer version of this package:
-
-1. **IMPORTANT**: Do NOT delete the `Nintendo` folder on your SD card - it contains all your save data!
-2. Copy the contents of the new `sd` folder to your SD card, overwriting existing files when prompted
-3. Re-inject the payload using the updated `fusee.bin` if provided in the new package
-4. Your saved data, configurations, and personal settings will remain intact
-
-## Using JKSV (Save Manager)
-
-JKSV lets you backup and restore game save files.
-
-### Backing Up Saves:
-
-1. Launch JKSV from the Homebrew Menu
-2. Select the game you want to backup from the list
-3. Press the + button or select "Backup" option
-4. Enter a name for your backup (or use the default)
-5. Wait for the backup to complete
-
-### Restoring Saves:
-
-1. Launch JKSV from the Homebrew Menu
-2. Select the game you want to restore
-3. Press Y to view your save backups
-4. Select the backup you want to restore
-5. Choose "Restore" and confirm
-6. Restart your game to use the restored save
-
-## Using FTPD Pro (File Transfer)
-
-FTPD allows wireless file transfer between your PC and Switch.
-
-### On Your Switch:
-
-1. Launch FTPD Pro from the Homebrew Menu
-2. The screen will display your Switch's IP address and port (usually 5000)
-3. Leave FTPD Pro running during the entire transfer process
-
-### On Your PC:
-
-1. Download and install an FTP client like FileZilla
-2. Open your FTP client and enter the connection details:
-   - Host: Your Switch's IP address (shown on the FTPD screen)
-   - Port: 5000 (or whatever is shown on the FTPD screen)
-   - Username: (leave blank or try "anonymous")
-   - Password: (leave blank)
-3. Click "Connect" or "Quick Connect"
-4. Once connected, you'll see your Switch's file system
-5. You can now drag and drop files between your PC and Switch
-6. When finished, disconnect from your FTP client before closing FTPD
-
-Tips:
-- Use FTP to add/update games and homebrew applications
-- Navigate to `/atmosphere/contents/` to modify game mods
-- You can transfer screenshots from `/Nintendo/Album/`
-
-## Troubleshooting
-
-- **Switch won't enter RCM**: Ensure your Switch is unpatched and the RCM jig is properly inserted
-- **Payload injection fails**: Try reinstalling drivers or using a different USB cable
-- **SysBot won't connect**: Verify your IP address and ensure your game is running
-- **Black screen after injection**: Ensure you're using the correct fusee.bin file for your setup
-- **Mod chip not booting**: Consult your mod chip documentation for specific troubleshooting steps
-
-## Additional Resources
-
-- [SysBot.NET Wiki](https://github.com/kwsch/SysBot.NET/wiki)
-- [Atmosphère Documentation](https://github.com/Atmosphere-NX/Atmosphere/wiki)
+```
+configs/
+  common/          Shared configs (system_settings.ini, hosts, themes)
+  mod-chipped/     Hekate boot config, warmboot binaries
+  unpatched/       (minimal)
+tools/
+  mod-chipped/     FAT32 formatter
+  unpatched/       FAT32 formatter + TegraRCM suite
+manifests/
+  firmware.json    Firmware download manifest for AetherBlock
+```
 
 ## Disclaimer
 
