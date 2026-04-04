@@ -16,6 +16,7 @@ This package contains all the essential files needed to set up SysBot.NET on an 
 - **JKSV** - Save file management tool ([source](https://github.com/J-D-K/JKSV))
 - **ldn_mitm** - Required for Sword/Shield SysBot ([source](https://github.com/Lusamine/ldn_mitm/tree/for_sbnet))
 - **ftpd pro** - FTP server for remote file management ([source](https://github.com/mtheall/ftpd))
+- **AetherBlock** - Block nintendo DNS servers or unblock them - without restarting your switch
 
 ## Prerequisites
 
