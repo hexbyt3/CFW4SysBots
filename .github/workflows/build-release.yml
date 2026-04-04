@@ -1,0 +1,64 @@
+name: Build CFW Package Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Get latest AetherBlock
+        run: gh release download --repo hexbyt3/AetherBlock --pattern "AetherBlock.zip"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update AetherBlock in packages
+        run: |
+          mkdir -p /tmp/aetherblock
+          unzip -o AetherBlock.zip -d /tmp/aetherblock
+
+          # Update in both packages
+          cp /tmp/aetherblock/switch/AetherBlock/AetherBlock.nro \
+            sd-mod-chipped/sd/switch/AetherBlock/AetherBlock.nro
+          cp /tmp/aetherblock/switch/AetherBlock/AetherBlock.nro \
+            sd-unpatched/sd/switch/AetherBlock/AetherBlock.nro
+
+      - name: Package mod-chipped
+        run: |
+          cd sd-mod-chipped/sd
+          zip -r ../../CFW4SysBots-mod-chipped.zip . \
+            -x "atmosphere/automatic_backups/*" \
+            -x "atmosphere/crash_reports/*" \
+            -x "atmosphere/erpt_reports/*" \
+            -x "atmosphere/fatal_reports/*" \
+            -x "atmosphere/fatal_errors/*" \
+            -x "atmosphere/logs/*"
+
+      - name: Package unpatched
+        run: |
+          cd sd-unpatched/sd
+          zip -r ../../CFW4SysBots-unpatched.zip . \
+            -x "atmosphere/automatic_backups/*" \
+            -x "atmosphere/crash_reports/*" \
+            -x "atmosphere/erpt_reports/*" \
+            -x "atmosphere/fatal_reports/*" \
+            -x "atmosphere/fatal_errors/*" \
+            -x "atmosphere/logs/*"
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            CFW4SysBots-mod-chipped.zip
+            CFW4SysBots-unpatched.zip
+          generate_release_notes: true

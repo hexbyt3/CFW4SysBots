@@ -1,0 +1,8 @@
+# Device-specific data - never commit these
+**/automatic_backups/
+**/crash_reports/
+**/erpt_reports/
+**/fatal_reports/
+**/fatal_errors/
+**/logs/
+**/JKSV/
