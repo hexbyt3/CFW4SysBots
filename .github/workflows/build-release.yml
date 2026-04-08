@@ -110,13 +110,22 @@ jobs:
           # Hekate bootloader directory
           unzip -o /tmp/dl/hekate_ctcaer_*_Nyx_*.zip -d build/mod-chipped/sd
 
+          # Resolve the hekate binary (pick the first match, ignore any
+          # minerva/nyx sidecars that may also end in .bin)
+          HEKATE_BIN=$(ls -1 /tmp/dl/hekate_ctcaer_*.bin 2>/dev/null | head -n1)
+          if [ -z "$HEKATE_BIN" ]; then
+            echo "ERROR: no hekate_ctcaer_*.bin found in /tmp/dl" >&2
+            exit 1
+          fi
+          echo "Using hekate bin: $HEKATE_BIN"
+
           # Hekate binary at SD root
-          cp /tmp/dl/hekate_ctcaer_*.bin build/mod-chipped/sd/
+          cp "$HEKATE_BIN" build/mod-chipped/sd/
 
           # reboot_payload.bin lets Atmosphere's bpc-mitm chainload hekate
           # on a standard reboot, so apps like Daybreak keep CFW alive.
           mkdir -p build/mod-chipped/sd/atmosphere
-          cp /tmp/dl/hekate_ctcaer_*.bin build/mod-chipped/sd/atmosphere/reboot_payload.bin
+          cp "$HEKATE_BIN" build/mod-chipped/sd/atmosphere/reboot_payload.bin
 
           # fusee.bin in bootloader payloads
           mkdir -p build/mod-chipped/sd/bootloader/payloads
@@ -140,12 +149,19 @@ jobs:
           # fusee.bin at SD root for RCM injection
           cp /tmp/dl/fusee.bin build/unpatched/sd/
 
+          # Resolve hekate bin (same reasoning as the mod-chipped step)
+          HEKATE_BIN=$(ls -1 /tmp/dl/hekate_ctcaer_*.bin 2>/dev/null | head -n1)
+          if [ -z "$HEKATE_BIN" ]; then
+            echo "ERROR: no hekate_ctcaer_*.bin found in /tmp/dl" >&2
+            exit 1
+          fi
+
           # reboot_payload.bin is REQUIRED on Erista — without it, a normal
           # reboot (including Daybreak's post-install reboot) falls through
           # to stock OFW because the RCM exploit is volatile. Atmosphere's
           # bpc-mitm chainloads this file to keep CFW alive across reboots.
           mkdir -p build/unpatched/sd/atmosphere
-          cp /tmp/dl/hekate_ctcaer_*.bin build/unpatched/sd/atmosphere/reboot_payload.bin
+          cp "$HEKATE_BIN" build/unpatched/sd/atmosphere/reboot_payload.bin
 
           # Package SD contents
 
