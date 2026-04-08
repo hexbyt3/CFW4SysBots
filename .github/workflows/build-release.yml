@@ -149,19 +149,18 @@ jobs:
           # fusee.bin at SD root for RCM injection
           cp /tmp/dl/fusee.bin build/unpatched/sd/
 
-          # Resolve hekate bin (same reasoning as the mod-chipped step)
-          HEKATE_BIN=$(ls -1 /tmp/dl/hekate_ctcaer_*.bin 2>/dev/null | head -n1)
-          if [ -z "$HEKATE_BIN" ]; then
-            echo "ERROR: no hekate_ctcaer_*.bin found in /tmp/dl" >&2
-            exit 1
-          fi
-
           # reboot_payload.bin is REQUIRED on Erista — without it, a normal
           # reboot (including Daybreak's post-install reboot) falls through
           # to stock OFW because the RCM exploit is volatile. Atmosphere's
           # bpc-mitm chainloads this file to keep CFW alive across reboots.
+          #
+          # The unpatched package boots directly via fusee.bin (not hekate),
+          # so it has no /bootloader/sys directory. Using a hekate binary
+          # here would dump the user into "Missing LP0 / Minerva" errors.
+          # Point reboot_payload.bin at fusee.bin instead — it's a valid
+          # RCM payload that boots straight back into Atmosphere.
           mkdir -p build/unpatched/sd/atmosphere
-          cp "$HEKATE_BIN" build/unpatched/sd/atmosphere/reboot_payload.bin
+          cp /tmp/dl/fusee.bin build/unpatched/sd/atmosphere/reboot_payload.bin
 
           # Package SD contents
 
