@@ -113,6 +113,11 @@ jobs:
           # Hekate binary at SD root
           cp /tmp/dl/hekate_ctcaer_*.bin build/mod-chipped/sd/
 
+          # reboot_payload.bin lets Atmosphere's bpc-mitm chainload hekate
+          # on a standard reboot, so apps like Daybreak keep CFW alive.
+          mkdir -p build/mod-chipped/sd/atmosphere
+          cp /tmp/dl/hekate_ctcaer_*.bin build/mod-chipped/sd/atmosphere/reboot_payload.bin
+
           # fusee.bin in bootloader payloads
           mkdir -p build/mod-chipped/sd/bootloader/payloads
           cp /tmp/dl/fusee.bin build/mod-chipped/sd/bootloader/payloads/
@@ -134,6 +139,13 @@ jobs:
 
           # fusee.bin at SD root for RCM injection
           cp /tmp/dl/fusee.bin build/unpatched/sd/
+
+          # reboot_payload.bin is REQUIRED on Erista — without it, a normal
+          # reboot (including Daybreak's post-install reboot) falls through
+          # to stock OFW because the RCM exploit is volatile. Atmosphere's
+          # bpc-mitm chainloads this file to keep CFW alive across reboots.
+          mkdir -p build/unpatched/sd/atmosphere
+          cp /tmp/dl/hekate_ctcaer_*.bin build/unpatched/sd/atmosphere/reboot_payload.bin
 
           # Package SD contents
 
