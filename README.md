@@ -61,6 +61,7 @@ Grab the latest release for your console type:
 3. Press **A** to check for updates, then **A** again to download and install
 4. **Don't reboot yet** — the new files are on your SD card and take effect on the next boot
 5. **Exit and reopen AetherBlock** — the package includes the newest AetherBlock, and it only takes over once the app is reopened. Doing the firmware step on an old AetherBlock can leave the console unable to boot CFW ("Unable to identify package1!")
+   - **If AetherBlock shows 2.1.2 or lower**, it cannot replace itself. Before updating firmware, copy `switch/AetherBlock/AetherBlock.nro` from the package onto the SD card once (by PC, or over FTP with ftpd). 2.1.3 and newer update themselves on reopen.
 
 **Step 2: Update Nintendo Firmware (if needed)**
 1. Press **B** to go back, then **ZL** → Firmware Manager
