@@ -196,4 +196,6 @@ jobs:
             CFW4SysBots-mod-chipped.zip
             CFW4SysBots-unpatched.zip
             Tools.zip
-          generate_release_notes: true
+          # only a tag's first build writes notes; a rerun (e.g. to pick up a new
+          # AetherBlock) would otherwise append another changelog to the edited notes
+          generate_release_notes: ${{ github.run_attempt == 1 }}
