@@ -110,9 +110,9 @@ jobs:
           # Hekate bootloader directory
           unzip -o /tmp/dl/hekate_ctcaer_*_Nyx_*.zip -d build/mod-chipped/sd
 
-          # Resolve the hekate binary (pick the first match, ignore any
-          # minerva/nyx sidecars that may also end in .bin)
-          HEKATE_BIN=$(ls -1 /tmp/dl/hekate_ctcaer_*.bin 2>/dev/null | head -n1)
+          # Resolve the hekate binary. Releases also ship a __ram8GB.bin
+          # build for 8GB-RAM-modded consoles; stock consoles need the plain one.
+          HEKATE_BIN=$(ls -1 /tmp/dl/hekate_ctcaer_*.bin 2>/dev/null | grep -v '__' | head -n1)
           if [ -z "$HEKATE_BIN" ]; then
             echo "ERROR: no hekate_ctcaer_*.bin found in /tmp/dl" >&2
             exit 1
@@ -181,7 +181,7 @@ jobs:
         run: |
           echo "## Component Versions" >> $GITHUB_STEP_SUMMARY
           echo "- Atmosphere: $(ls /tmp/dl/atmosphere-*.zip | sed 's/.*atmosphere-//' | sed 's/-master.*//')" >> $GITHUB_STEP_SUMMARY
-          echo "- Hekate: $(ls /tmp/dl/hekate_ctcaer_*.bin | sed 's/.*hekate_ctcaer_//' | sed 's/\.bin//')" >> $GITHUB_STEP_SUMMARY
+          echo "- Hekate: $(ls /tmp/dl/hekate_ctcaer_*.bin | grep -v '__' | sed 's/.*hekate_ctcaer_//' | sed 's/\.bin//')" >> $GITHUB_STEP_SUMMARY
           echo "- AetherBlock: latest" >> $GITHUB_STEP_SUMMARY
           echo "- JKSV: latest" >> $GITHUB_STEP_SUMMARY
           echo "- ftpd: latest" >> $GITHUB_STEP_SUMMARY
