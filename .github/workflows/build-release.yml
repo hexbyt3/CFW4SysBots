@@ -173,7 +173,10 @@ jobs:
           cp -r tools/mod-chipped/* build/tools/
           cp -r tools/unpatched/* build/tools/
           mkdir -p build/tools/TegraRCM/favorites
-          cp /tmp/dl/fusee.bin build/tools/TegraRCM/favorites/ 2>/dev/null || true
+          # Both payload copies come from this build: a committed fusee.bin
+          # goes stale with every Atmosphere release and can't boot package3.
+          cp /tmp/dl/fusee.bin build/tools/TegraRCM/fusee.bin
+          cp /tmp/dl/fusee.bin build/tools/TegraRCM/favorites/
           cd build/tools
           zip -r ../../Tools.zip .
 
